@@ -1,12 +1,13 @@
 package com.test.banshee.service;
 
 import com.test.banshee.domain.Customer;
+import com.test.banshee.dto.customer.CreateCustomerDTO;
+import com.test.banshee.dto.customer.CustomerSummaryDTO;
+import com.test.banshee.dto.customer.GetCustomerDTO;
+import com.test.banshee.dto.customer.UpdateCustomerDTO;
 import com.test.banshee.exception.CustomerAlreadyExistsException;
 import com.test.banshee.exception.notfound.CustomerNotFoundException;
 import com.test.banshee.repository.CustomerRepository;
-import com.test.banshee.dto.customer.CreateCustomerDTO;
-import com.test.banshee.dto.customer.GetCustomerDTO;
-import com.test.banshee.dto.customer.UpdateCustomerDTO;
 import com.test.banshee.service.mapper.CustomerMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,8 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +26,17 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
 
     @Override
-    public Page<GetCustomerDTO> getCustomers(final int page, final int pageSize) {
+    public GetCustomerDTO getCustomer(final long customerId) {
+        final Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new CustomerNotFoundException(customerId));
+        return customerMapper.customerToGetCustomerDTO(customer);
+    }
+
+    @Override
+    public Page<CustomerSummaryDTO> getCustomers(final int page, final int pageSize) {
         final PageRequest pageRequest = PageRequest.of(page, pageSize, Sort.by("fullName").and(Sort.by("nit")));
-        return customerRepository.findAll(pageRequest)
-                .map(customerMapper::customerToGetCustomerDTO);
+        return customerRepository.findBy(pageRequest)
+                .map(customerMapper::customerSummaryToCustomerSummaryDTO);
     }
 
     @Override

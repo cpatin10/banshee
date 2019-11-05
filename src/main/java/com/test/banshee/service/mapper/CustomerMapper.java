@@ -2,6 +2,8 @@ package com.test.banshee.service.mapper;
 
 import com.test.banshee.domain.Customer;
 import com.test.banshee.dto.customer.CreateCustomerDTO;
+import com.test.banshee.dto.customer.CustomerSummary;
+import com.test.banshee.dto.customer.CustomerSummaryDTO;
 import com.test.banshee.dto.customer.GetCustomerDTO;
 import com.test.banshee.dto.customer.UpdateCustomerDTO;
 import org.mapstruct.Mapper;
@@ -13,6 +15,8 @@ public abstract class CustomerMapper {
 
     @Mapping(source = "city", target = "location")
     public abstract GetCustomerDTO customerToGetCustomerDTO(Customer customer);
+
+    public abstract CustomerSummaryDTO customerSummaryToCustomerSummaryDTO(CustomerSummary customerSummary);
 
     @Mapping(source = "location", target = "city")
     public abstract Customer createCustomerDTOToCustomer(CreateCustomerDTO dto);

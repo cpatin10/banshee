@@ -1,5 +1,6 @@
 package com.test.banshee.web;
 
+import com.test.banshee.dto.customer.CustomerSummaryDTO;
 import com.test.banshee.service.CustomerService;
 import com.test.banshee.dto.customer.CreateCustomerDTO;
 import com.test.banshee.dto.customer.GetCustomerDTO;
@@ -25,11 +26,16 @@ public class CustomerResource {
 
     private final CustomerService customerService;
 
+    @GetMapping("/{customerId}")
+    public ResponseEntity<GetCustomerDTO> getCustomer(@PathVariable("customerId") final long customerId) {
+        return ResponseEntity.ok(customerService.getCustomer(customerId));
+    }
+
     @GetMapping
-    public ResponseEntity<List<GetCustomerDTO>> getCustomers(
+    public ResponseEntity<List<CustomerSummaryDTO>> getCustomers(
             @RequestParam(defaultValue = "0", required = false) final int page,
-            @RequestParam(defaultValue = "5", required = false) final int pageSize) {
-        final Page<GetCustomerDTO> customerDTOPage = customerService.getCustomers(page, pageSize);
+            @RequestParam(defaultValue = "10", required = false) final int pageSize) {
+        final Page<CustomerSummaryDTO> customerDTOPage = customerService.getCustomers(page, pageSize);
         final HttpHeaders headers = new HttpHeaders();
         headers.add("total-pages", String.valueOf(customerDTOPage.getTotalPages()));
         return new ResponseEntity<>(customerDTOPage.getContent(), headers, HttpStatus.OK);
