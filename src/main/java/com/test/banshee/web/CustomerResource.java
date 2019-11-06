@@ -1,21 +1,29 @@
 package com.test.banshee.web;
 
-import com.test.banshee.dto.customer.CustomerSummaryDTO;
-import com.test.banshee.service.CustomerService;
 import com.test.banshee.dto.customer.CreateCustomerDTO;
+import com.test.banshee.dto.customer.CustomerSummaryDTO;
 import com.test.banshee.dto.customer.GetCustomerDTO;
 import com.test.banshee.dto.customer.UpdateCustomerDTO;
+import com.test.banshee.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -42,10 +50,13 @@ public class CustomerResource {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createCustomer(@Valid @RequestBody final CreateCustomerDTO createCustomerDTO)
-            throws URISyntaxException {
+    public ResponseEntity<Void> createCustomer(@Valid @RequestBody final CreateCustomerDTO createCustomerDTO) {
         final long customerId = customerService.createCustomer(createCustomerDTO);
-        return ResponseEntity.created(new URI("/api/customers/" + customerId)).build();
+        final URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(customerId)
+                .toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @PutMapping("/{customerId}")
