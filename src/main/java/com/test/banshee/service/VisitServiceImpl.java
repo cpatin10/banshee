@@ -1,17 +1,14 @@
 package com.test.banshee.service;
 
 import com.test.banshee.domain.Customer;
-import com.test.banshee.domain.SalesRepresentative;
 import com.test.banshee.domain.Visit;
 import com.test.banshee.dto.visit.CreateVisitDTO;
 import com.test.banshee.dto.visit.UpdateVisitDTO;
-import com.test.banshee.exception.notfound.CustomerNotFoundException;
 import com.test.banshee.exception.ExceededCreditLimitException;
 import com.test.banshee.exception.InsufficientCreditException;
-import com.test.banshee.exception.notfound.SalesRepresentativeNotFoundException;
+import com.test.banshee.exception.notfound.CustomerNotFoundException;
 import com.test.banshee.exception.notfound.VisitNotFoundException;
 import com.test.banshee.repository.CustomerRepository;
-import com.test.banshee.repository.SalesRepresentativeRepository;
 import com.test.banshee.repository.VisitRepository;
 import com.test.banshee.service.mapper.VisitMapper;
 import lombok.RequiredArgsConstructor;
@@ -46,8 +43,9 @@ public class VisitServiceImpl implements VisitService {
     @Override
     @Transactional
     public void updateVisit(final long visitId, final UpdateVisitDTO updateVisitDTO) {
-        final Visit visit = visitRepository.findById(visitId).orElseThrow(() -> new VisitNotFoundException(visitId));
-        final Customer customer = getCustomer(visit.getCustomer().getId());
+        final Visit visit = visitRepository.findById(visitId)
+                .orElseThrow(() -> new VisitNotFoundException(visitId));
+        final Customer customer = visit.getCustomer();
         final BigDecimal newVisitTotal = getVisitTotal(updateVisitDTO.getNet(), customer);
         customer.setAvailableCredit(customer.getAvailableCredit().add(visit.getVisitTotal()).subtract(newVisitTotal));
         visitMapper.updateVisitDTOToVisit(visit, updateVisitDTO);
