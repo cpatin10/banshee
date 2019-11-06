@@ -21,7 +21,7 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 import static com.test.banshee.constants.CustomerTestConstants.ANY_CUSTOMER_ID;
-import static com.test.banshee.constants.CustomerTestConstants.ANY_VISITS_PERCENTAGE;
+import static com.test.banshee.constants.CustomerTestConstants.ANY_VISIT_PERCENTAGE;
 import static com.test.banshee.constants.VisitTestConstants.ANOTHER_NET;
 import static com.test.banshee.constants.VisitTestConstants.ANY_NET;
 import static com.test.banshee.constants.VisitTestConstants.ANY_VISIT_ID;
@@ -71,9 +71,9 @@ class VisitServiceImplTest {
                 .build();
 
         customer = new Customer();
-        customer.setVisitPercentage(ANY_VISITS_PERCENTAGE);
-        customer.setAvailableCredit(BigDecimal.valueOf(ANY_NET * ANY_VISITS_PERCENTAGE));
-        customer.setCreditLimit(BigDecimal.valueOf(ANY_NET * ANY_VISITS_PERCENTAGE));
+        customer.setVisitPercentage(ANY_VISIT_PERCENTAGE);
+        customer.setAvailableCredit(BigDecimal.valueOf(ANY_NET * ANY_VISIT_PERCENTAGE));
+        customer.setCreditLimit(BigDecimal.valueOf(ANY_NET * ANY_VISIT_PERCENTAGE));
 
         visit = new Visit();
         visit.setId(ANY_VISIT_ID);
@@ -91,7 +91,7 @@ class VisitServiceImplTest {
 
         assertThat(result, is(ANY_VISIT_ID));
         assertThat(visit.getCustomer(), is(customer));
-        assertThat(visit.getVisitTotal(), is(BigDecimal.valueOf(ANY_NET * ANY_VISITS_PERCENTAGE)));
+        assertThat(visit.getVisitTotal(), is(BigDecimal.valueOf(ANY_NET * ANY_VISIT_PERCENTAGE)));
         assertThat(customer.getAvailableCredit(), is(initialAvailableCredit.subtract(visit.getVisitTotal())));
 
         then(customerRepository).should(times(1)).findById(ANY_CUSTOMER_ID);
@@ -110,7 +110,7 @@ class VisitServiceImplTest {
 
     @Test
     void shouldThrowExceededCreditLimitExceptionWhenCreatingVisitThatExceedsCreditLimit() {
-        customer.setCreditLimit(BigDecimal.valueOf(ANY_NET * ANY_VISITS_PERCENTAGE - 1));
+        customer.setCreditLimit(BigDecimal.valueOf(ANY_NET * ANY_VISIT_PERCENTAGE - 1));
 
         given(customerRepository.findById(ANY_CUSTOMER_ID)).willReturn(Optional.of(customer));
 
@@ -121,7 +121,7 @@ class VisitServiceImplTest {
 
     @Test
     void shouldThrowInsufficientCreditExceptionWhenCreatingVisitThatExceedsAvailableCredit() {
-        customer.setAvailableCredit(BigDecimal.valueOf(ANY_NET * ANY_VISITS_PERCENTAGE - 1));
+        customer.setAvailableCredit(BigDecimal.valueOf(ANY_NET * ANY_VISIT_PERCENTAGE - 1));
 
         given(customerRepository.findById(ANY_CUSTOMER_ID)).willReturn(Optional.of(customer));
 
@@ -143,7 +143,7 @@ class VisitServiceImplTest {
         visitService.updateVisit(ANY_VISIT_ID, updateVisitDTO);
 
         assertThat(visit.getCustomer(), is(customer));
-        assertThat(visit.getVisitTotal(), is(BigDecimal.valueOf(ANY_NET * ANY_VISITS_PERCENTAGE)));
+        assertThat(visit.getVisitTotal(), is(BigDecimal.valueOf(ANY_NET * ANY_VISIT_PERCENTAGE)));
         assertThat(customer.getAvailableCredit(),
                 is(initialAvailableCredit.add(ANY_VISIT_TOTAL).subtract(visit.getVisitTotal())));
 
@@ -162,7 +162,7 @@ class VisitServiceImplTest {
 
     @Test
     void shouldThrowExceededCreditLimitExceptionWhenUpdatingVisitThatExceedsCreditLimit() {
-        customer.setCreditLimit(BigDecimal.valueOf(ANY_NET * ANY_VISITS_PERCENTAGE - 1));
+        customer.setCreditLimit(BigDecimal.valueOf(ANY_NET * ANY_VISIT_PERCENTAGE - 1));
         visit.setCustomer(customer);
 
         given(visitRepository.findById(ANY_VISIT_ID)).willReturn(Optional.of(visit));
@@ -174,7 +174,7 @@ class VisitServiceImplTest {
 
     @Test
     void shouldThrowInsufficientCreditExceptionWhenUpdatingVisitThatExceedsAvailableCredit() {
-        customer.setAvailableCredit(BigDecimal.valueOf(ANY_NET * ANY_VISITS_PERCENTAGE - 1));
+        customer.setAvailableCredit(BigDecimal.valueOf(ANY_NET * ANY_VISIT_PERCENTAGE - 1));
         visit.setCustomer(customer);
 
         given(visitRepository.findById(ANY_VISIT_ID)).willReturn(Optional.of(visit));

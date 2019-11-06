@@ -1,10 +1,10 @@
 package com.test.banshee.service.mapper;
 
 import com.test.banshee.domain.City;
+import com.test.banshee.dto.location.GetLocationDTO;
 import com.test.banshee.dto.location.LocationDTO;
 import com.test.banshee.exception.notfound.LocationNotFoundException;
 import com.test.banshee.repository.CityRepository;
-import com.test.banshee.dto.location.GetLocationDTO;
 import org.mapstruct.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 

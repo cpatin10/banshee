@@ -32,7 +32,7 @@ public class GetCustomerDTO {
 
     private BigDecimal availableCredit;
 
-    private BigDecimal visitPercentage;
+    private Double visitPercentage;
 
     private List<GetVisitDTO> visits;
 

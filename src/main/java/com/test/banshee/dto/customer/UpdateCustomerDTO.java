@@ -44,8 +44,7 @@ public class UpdateCustomerDTO {
     @Min(0)
     private BigDecimal availableCredit;
 
-    @NotNull
     @Min(0)
-    private BigDecimal visitPercentage;
+    private double visitPercentage;
 
 }
